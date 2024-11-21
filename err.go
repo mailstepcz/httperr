@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+
+	"github.com/mailstepcz/serr"
 )
 
 // HTTPError is an error convertible into an HTTP error.
@@ -19,12 +21,15 @@ type HTTPErrorEnvelope struct {
 }
 
 // New creates a new error convertible into an HTTP error.
-func New(err string, status int) HTTPErrorEnvelope {
-	return Wrap(errors.New(err), status)
+func New(err string, status int, attrs ...serr.Attributed) HTTPErrorEnvelope {
+	return Wrap(errors.New(err), status, attrs...)
 }
 
 // Wrap wraps an error into one convertible into an HTTP error.
-func Wrap(err error, status int) HTTPErrorEnvelope {
+func Wrap(err error, status int, attrs ...serr.Attributed) HTTPErrorEnvelope {
+	if len(attrs) > 0 {
+		err = serr.Wrap("", err, attrs...)
+	}
 	return HTTPErrorEnvelope{
 		err:    err,
 		status: status,
