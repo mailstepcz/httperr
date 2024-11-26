@@ -3,6 +3,7 @@ package httperr
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/mailstepcz/serr"
@@ -22,13 +23,15 @@ type HTTPErrorEnvelope struct {
 
 // New creates a new error convertible into an HTTP error.
 func New(err string, status int, attrs ...serr.Attributed) HTTPErrorEnvelope {
-	return Wrap(errors.New(err), status, attrs...)
+	return Wrap("", errors.New(err), status, attrs...)
 }
 
 // Wrap wraps an error into one convertible into an HTTP error.
-func Wrap(err error, status int, attrs ...serr.Attributed) HTTPErrorEnvelope {
+func Wrap(msg string, err error, status int, attrs ...serr.Attributed) HTTPErrorEnvelope {
 	if len(attrs) > 0 {
-		err = serr.Wrap("", err, attrs...)
+		err = serr.Wrap(msg, err, attrs...)
+	} else if msg != "" {
+		err = fmt.Errorf("%s: %w", msg, err)
 	}
 	return HTTPErrorEnvelope{
 		err:    err,

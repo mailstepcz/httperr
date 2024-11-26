@@ -12,7 +12,7 @@ import (
 func TestHTTPStatus(t *testing.T) {
 	req := require.New(t)
 
-	dummyErr := Wrap(errors.ErrUnsupported, http.StatusNotImplemented)
+	dummyErr := Wrap("", errors.ErrUnsupported, http.StatusNotImplemented)
 
 	req.Equal(http.StatusNotImplemented, HTTPStatus(dummyErr))
 
@@ -24,7 +24,7 @@ func TestHTTPStatus(t *testing.T) {
 func TestHTTPWrappedError(t *testing.T) {
 	req := require.New(t)
 
-	dummyErr := serr.Wrap("wrapped", Wrap(errors.ErrUnsupported, http.StatusNotImplemented))
+	dummyErr := serr.Wrap("wrapped", Wrap("", errors.ErrUnsupported, http.StatusNotImplemented))
 
 	req.Equal(http.StatusNotImplemented, HTTPStatus(dummyErr))
 
@@ -36,7 +36,7 @@ func TestHTTPWrappedError(t *testing.T) {
 func TestHTTPWrappedErrors(t *testing.T) {
 	req := require.New(t)
 
-	dummyErr := errors.Join(errors.New("some error"), serr.Wrap("wrapped", Wrap(errors.ErrUnsupported, http.StatusNotImplemented)))
+	dummyErr := errors.Join(errors.New("some error"), serr.Wrap("wrapped", Wrap("", errors.ErrUnsupported, http.StatusNotImplemented)))
 
 	req.Equal(http.StatusNotImplemented, HTTPStatus(dummyErr))
 
