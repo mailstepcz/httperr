@@ -3,7 +3,7 @@ module github.com/mailstepcz/httperr
 go 1.23
 
 require (
-	github.com/mailstepcz/cache v0.0.0-20250203120809-e1c0a3a1b7bc
+	github.com/mailstepcz/cache v0.0.0-20250203151726-d228c9779fec
 	github.com/mailstepcz/serr v0.1.2
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/grpc v1.70.0
