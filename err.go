@@ -8,6 +8,8 @@ import (
 
 	"github.com/mailstepcz/cache"
 	"github.com/mailstepcz/serr"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // HTTPError is an error convertible into an HTTP error.
@@ -61,6 +63,10 @@ func HTTPStatus(err error) int {
 		return c
 	}
 
+	if status, ok := status.FromError(err); ok {
+		return grpcCodeToStatusCode(status.Code())
+	}
+
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		return http.StatusNotFound
@@ -72,6 +78,21 @@ func HTTPStatus(err error) int {
 var (
 	statusCache cache.Cache[error, int]
 )
+
+func grpcCodeToStatusCode(code codes.Code) int {
+	switch code {
+	case codes.NotFound:
+		return http.StatusNotFound
+	case codes.Unauthenticated:
+		return http.StatusUnauthorized
+	case codes.Unimplemented:
+		return http.StatusNotImplemented
+	case codes.InvalidArgument:
+		return http.StatusBadRequest
+	}
+
+	return http.StatusInternalServerError
+}
 
 func getHTTPStatus(err error) (int, bool) {
 	if s, ok := statusCache.Get(err); ok {
