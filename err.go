@@ -79,10 +79,10 @@ func getHTTPStatus(err error) (int, bool) {
 
 	if err, ok := err.(wrappedErrs); ok {
 		errs := err.Unwrap()
-		statuses := make([]int, 0, len(errs))
+		statuses := make(map[int]struct{}, len(errs))
 		for _, err := range errs {
 			if c, ok := getHTTPStatus(err); ok {
-				statuses = append(statuses, c)
+				statuses[c] = struct{}{}
 			}
 		}
 		if len(statuses) > 1 {
@@ -91,7 +91,9 @@ func getHTTPStatus(err error) (int, bool) {
 		if len(statuses) == 0 {
 			return 0, false
 		}
-		return statuses[0], true
+		for s := range statuses {
+			return s, true
+		}
 	}
 
 	return 0, false
