@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/mailstepcz/cache"
 	"github.com/mailstepcz/serr"
 )
 
@@ -68,7 +69,15 @@ func HTTPStatus(err error) int {
 	return http.StatusInternalServerError
 }
 
+var (
+	statusCache cache.Cache[error, int]
+)
+
 func getHTTPStatus(err error) (int, bool) {
+	if s, ok := statusCache.Get(err); ok {
+		return *s, true
+	}
+
 	if err, ok := err.(HTTPError); ok {
 		return err.HTTPStatus(), true
 	}
@@ -92,6 +101,7 @@ func getHTTPStatus(err error) (int, bool) {
 			return 0, false
 		}
 		for s := range statuses {
+			statusCache.Put(err, &s)
 			return s, true
 		}
 	}
