@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/mailstepcz/cache"
 	"github.com/mailstepcz/serr"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -74,6 +75,10 @@ func HTTPStatus(err error) int {
 	return http.StatusInternalServerError
 }
 
+var (
+	statusCache cache.Cache[error, int]
+)
+
 func grpcCodeToStatusCode(code codes.Code) int {
 	switch code {
 	case codes.NotFound:
@@ -90,6 +95,10 @@ func grpcCodeToStatusCode(code codes.Code) int {
 }
 
 func getHTTPStatus(err error) (int, bool) {
+	if s, ok := statusCache.Get(err); ok {
+		return *s, true
+	}
+
 	if err, ok := err.(HTTPError); ok {
 		return err.HTTPStatus(), true
 	}
@@ -100,10 +109,10 @@ func getHTTPStatus(err error) (int, bool) {
 
 	if err, ok := err.(wrappedErrs); ok {
 		errs := err.Unwrap()
-		statuses := make([]int, 0, len(errs))
+		statuses := make(map[int]struct{}, len(errs))
 		for _, err := range errs {
 			if c, ok := getHTTPStatus(err); ok {
-				statuses = append(statuses, c)
+				statuses[c] = struct{}{}
 			}
 		}
 		if len(statuses) > 1 {
@@ -112,7 +121,10 @@ func getHTTPStatus(err error) (int, bool) {
 		if len(statuses) == 0 {
 			return 0, false
 		}
-		return statuses[0], true
+		for s := range statuses {
+			statusCache.Put(err, &s)
+			return s, true
+		}
 	}
 
 	return 0, false
