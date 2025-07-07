@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/mailstepcz/cache"
+	"github.com/mailstepcz/grpcerr"
 	"github.com/mailstepcz/serr"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -101,6 +102,10 @@ func getHTTPStatus(err error) (int, bool) {
 
 	if err, ok := err.(HTTPError); ok {
 		return err.HTTPStatus(), true
+	}
+
+	if err, ok := err.(grpcerr.Convertible); ok {
+		return grpcCodeToStatusCode(err.GRPCErrorCode()), true
 	}
 
 	if err, ok := err.(wrappedErr); ok {
