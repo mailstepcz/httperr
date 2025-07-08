@@ -55,7 +55,7 @@ func TestSerrWrappedGrpcError(t *testing.T) {
 
 	req.Equal(http.StatusNotFound, HTTPStatus(wrappedError))
 
-	req.Equal("wrapped error: first error", wrappedError.Error())
+	req.EqualError(wrappedError, "wrapped error: first error")
 
 	req.ErrorIs(wrappedError, baseError)
 }
