@@ -57,5 +57,5 @@ func TestSerrWrappedGrpcError(t *testing.T) {
 
 	req.Equal("wrapped error: first error", wrappedError.Error())
 
-	req.True(errors.Is(wrappedError, baseError))
+	req.ErrorIs(wrappedError, baseError)
 }
