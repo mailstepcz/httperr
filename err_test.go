@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/mailstepcz/grpcerr"
 	"github.com/mailstepcz/serr"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
 )
 
 func TestHTTPStatus(t *testing.T) {
@@ -43,4 +45,17 @@ func TestHTTPWrappedErrors(t *testing.T) {
 	req.Equal("some error\nwrapped: unsupported operation", dummyErr.Error())
 
 	req.True(errors.Is(dummyErr, errors.ErrUnsupported))
+}
+
+func TestSerrWrappedGrpcError(t *testing.T) {
+	req := require.New(t)
+
+	baseError := grpcerr.New("first error", codes.NotFound)
+	wrappedError := serr.Wrap("wrapped error", baseError)
+
+	req.Equal(http.StatusNotFound, HTTPStatus(wrappedError))
+
+	req.EqualError(wrappedError, "wrapped error: first error")
+
+	req.ErrorIs(wrappedError, baseError)
 }

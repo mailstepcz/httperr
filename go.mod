@@ -6,6 +6,7 @@ toolchain go1.24.0
 
 require (
 	github.com/mailstepcz/cache v0.1.1
+	github.com/mailstepcz/grpcerr v0.1.7
 	github.com/mailstepcz/serr v0.1.5
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/grpc v1.71.1
