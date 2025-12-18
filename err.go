@@ -90,6 +90,8 @@ func grpcCodeToStatusCode(code codes.Code) int {
 		return http.StatusNotImplemented
 	case codes.InvalidArgument:
 		return http.StatusBadRequest
+	case codes.Canceled:
+		return http.StatusBadRequest
 	}
 
 	return http.StatusInternalServerError
