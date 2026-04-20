@@ -43,6 +43,13 @@ func Wrap(msg string, err error, status int, attrs ...serr.Attributed) HTTPError
 	}
 }
 
+// WrapMulti wraps multiple errors together. Error is convertible to an HTTP error.
+func WrapMulti(msg string, errs []error, status int, attrs ...serr.Attributed) HTTPErrorEnvelope {
+	err := errors.Join(errs...)
+	return Wrap(msg, err, status, attrs...)
+
+}
+
 func (err HTTPErrorEnvelope) Error() string {
 	return err.err.Error()
 }
