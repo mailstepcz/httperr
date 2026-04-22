@@ -93,11 +93,17 @@ func grpcCodeToStatusCode(code codes.Code) int {
 		return http.StatusNotFound
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized
+	case codes.PermissionDenied:
+		return http.StatusForbidden
 	case codes.Unimplemented:
 		return http.StatusNotImplemented
 	case codes.InvalidArgument:
 		return http.StatusBadRequest
 	case codes.Canceled:
+		return http.StatusBadRequest
+	case codes.AlreadyExists:
+		return http.StatusConflict
+	case codes.FailedPrecondition:
 		return http.StatusBadRequest
 	}
 
