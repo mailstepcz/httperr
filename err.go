@@ -5,10 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
-	"github.com/mailstepcz/cache"
 	"github.com/mailstepcz/grpcerr"
 	"github.com/mailstepcz/serr"
+	"github.com/maypok86/otter/v2"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -84,7 +85,10 @@ func HTTPStatus(err error) int {
 }
 
 var (
-	statusCache cache.Cache[error, int]
+	statusCache = otter.Must(&otter.Options[error, int]{
+		MaximumSize:      5_000,
+		ExpiryCalculator: otter.ExpiryWriting[error, int](30 * time.Minute),
+	})
 )
 
 func grpcCodeToStatusCode(code codes.Code) int {
@@ -111,8 +115,8 @@ func grpcCodeToStatusCode(code codes.Code) int {
 }
 
 func getHTTPStatus(err error) (int, bool) {
-	if s, ok := statusCache.Get(err); ok {
-		return *s, true
+	if s, ok := statusCache.GetIfPresent(err); ok {
+		return s, true
 	}
 
 	if err, ok := err.(HTTPError); ok {
@@ -142,7 +146,7 @@ func getHTTPStatus(err error) (int, bool) {
 			return 0, false
 		}
 		for s := range statuses {
-			statusCache.Put(err, &s)
+			statusCache.Set(err, s)
 			return s, true
 		}
 	}
