@@ -14,6 +14,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// StatusClientClosedRequest is the non-standard 499 status for a request the caller abandoned; net/http has no constant for it.
+const StatusClientClosedRequest = 499
+
 // HTTPError is an error convertible into an HTTP error.
 type HTTPError interface {
 	error
@@ -79,6 +82,8 @@ func HTTPStatus(err error) int {
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		return http.StatusNotFound
+	case serr.IsCanceled(err):
+		return StatusClientClosedRequest
 	}
 
 	return http.StatusInternalServerError
@@ -104,7 +109,7 @@ func grpcCodeToStatusCode(code codes.Code) int {
 	case codes.InvalidArgument:
 		return http.StatusBadRequest
 	case codes.Canceled:
-		return http.StatusBadRequest
+		return StatusClientClosedRequest
 	case codes.AlreadyExists:
 		return http.StatusConflict
 	case codes.FailedPrecondition:
