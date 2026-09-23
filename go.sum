@@ -27,8 +27,8 @@ github.com/mailstepcz/go-utils v0.1.48 h1:NzYrESpGlOeV2ZbXlTYUcdIJbRdwyW7DUM6gBI
 github.com/mailstepcz/go-utils v0.1.48/go.mod h1:UzNdj5EqJnwmYuExdjVK8QGLqHZQPmX+pr1Mu25FLaM=
 github.com/mailstepcz/grpcerr v0.1.7 h1:ZXs9pzkvo6mAtrlaygJMJwg26yXZUPvatb84vgT8W/o=
 github.com/mailstepcz/grpcerr v0.1.7/go.mod h1:bB5L0suCm4psyUsrLI4E/9eV+Om2GlAnYKbtuvJjNqw=
-github.com/mailstepcz/serr v0.1.10-0.20260922142037-423ebd44e966 h1:UyzQ4eh8Cbcmo3Nsw8qb7D01oB2jMBNK7C+6Hn1CTLI=
-github.com/mailstepcz/serr v0.1.10-0.20260922142037-423ebd44e966/go.mod h1:eoEDtn3Rx45bfR394yuoA1/8+6rBMZ/tWGdWeg1Ytgc=
+github.com/mailstepcz/serr v0.1.10 h1:ofO+BpPaPMzpfRWspqbyXO6mCt6yID0ij2DpCTx6xVI=
+github.com/mailstepcz/serr v0.1.10/go.mod h1:eoEDtn3Rx45bfR394yuoA1/8+6rBMZ/tWGdWeg1Ytgc=
 github.com/mailstepcz/testutils v0.1.6 h1:Nnadejn6dUxrAeuMnTZKhbbnD+8Mpjbdz13b6a87hf4=
 github.com/mailstepcz/testutils v0.1.6/go.mod h1:E7zSculikvzvexh2f5hTGKS8xm15b+fiTUDh9NFlxWI=
 github.com/maypok86/otter/v2 v2.3.0 h1:8H8AVVFUSzJwIegKwv1uF5aGitTY+AIrtktg7OcLs8w=
