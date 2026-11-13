@@ -22,6 +22,7 @@ Go support for HTTP error codes
 | `AlreadyExists` | 409 |
 | `FailedPrecondition` | 400 |
 | `Canceled` | 499 |
+| `Unavailable` | 503 |
 | anything else | 500 |
 
 ### 499 — the caller went away
