@@ -115,6 +115,16 @@ func TestHTTPStatusMapping(t *testing.T) {
 			want: StatusClientClosedRequest,
 		},
 		{
+			name: "gRPC status carrying codes.Unavailable",
+			err:  status.Error(codes.Unavailable, "upstream unavailable"),
+			want: http.StatusServiceUnavailable,
+		},
+		{
+			name: "grpcerr error tagged codes.Unavailable",
+			err:  serr.Wrap("logging in", grpcerr.New("upstream unavailable", codes.Unavailable)),
+			want: http.StatusServiceUnavailable,
+		},
+		{
 			name: "gRPC status carrying codes.DeadlineExceeded is not a cancellation",
 			err:  status.Error(codes.DeadlineExceeded, "context deadline exceeded"),
 			want: http.StatusInternalServerError,

@@ -114,6 +114,8 @@ func grpcCodeToStatusCode(code codes.Code) int {
 		return http.StatusConflict
 	case codes.FailedPrecondition:
 		return http.StatusBadRequest
+	case codes.Unavailable:
+		return http.StatusServiceUnavailable
 	}
 
 	return http.StatusInternalServerError
